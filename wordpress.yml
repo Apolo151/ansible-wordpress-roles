@@ -1,0 +1,18 @@
+# - hosts: localhost
+#   gather_facts: False
+#   roles:
+#     - ec2
+
+# - hosts: all
+#   gather_facts: False
+#   become: true
+#   tasks:
+#   - name: update repo index
+#     apt: 
+#       update_cache: yes
+#     changed_when: False
+
+- hosts: all
+  become: true
+  roles:
+    - mysql

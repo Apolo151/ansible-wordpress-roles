@@ -1,2 +1,65 @@
 ---
 # tasks file for mysql
+
+- name: Install MySQL 8
+  apt:
+    name: mysql-server
+    state: present
+  tags: mysql
+
+- name: Ensure MySQL is running
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  tags: mysql
+  
+- name: Install MySQL Python dependencies for Python 3
+  ansible.builtin.package:
+    name:
+      - python3-pip
+      - python3-dev
+      - libmysqlclient-dev
+      - build-essential
+  become: yes
+
+- name: Install PyMySQL for Python 3
+  ansible.builtin.pip:
+    name: PyMySQL
+  become: yes
+  tags: mysql
+
+- name: Setup the root user password and access with hosts
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "{{ mysql_root_password }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    check_implicit_admin: yes
+    priv: "*.*:ALL,GRANT"
+    state: present
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+  become: yes
+  tags: mysql
+
+- name: Create wordpress database
+  mysql_db:
+    name: "{{ wordpress_database }}"
+    state: present
+  tags: mysql,wordpress_db
+
+- name: Create wordpress user with privileges
+  mysql_user:
+    name: "{{ wordpress_user }}"
+    password: "{{ wordpress_user_password }}"
+    priv: "{{ wordpress_database }}.*:ALL"
+    state: present
+  tags: mysql,wordpress_db
+
+- include_tasks: cron.yml

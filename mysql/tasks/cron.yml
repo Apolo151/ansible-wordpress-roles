@@ -1,0 +1,22 @@
+
+- name: Create backup directory
+  file:
+    path: "{{ backup_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Deploy backup script
+  template:
+    src: backup.sh.j2
+    dest: /usr/local/bin/mysql_backup.sh
+    mode: '0755'
+
+- name: Configure cron job for backups
+  cron:
+    name: "MySQL Backup"
+    minute: "{{ cron_time.split()[0] }}"
+    hour: "{{ cron_time.split()[1] }}"
+    day: "{{ cron_time.split()[2] }}"
+    month: "{{ cron_time.split()[3] }}"
+    weekday: "{{ cron_time.split()[4] }}"
+    job: "/usr/local/bin/mysql_backup.sh"

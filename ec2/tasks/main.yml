@@ -1,2 +1,23 @@
 ---
 # tasks file for ec2
+- name: Provision an EC2 instance with a public IP address
+  amazon.aws.ec2_instance:
+    name: abdallah-ansible
+    key_name: "abdallah-key-abi"
+    vpc_subnet_id: subnet-0277349f7e1ec9644
+    instance_type: t3.small
+    security_group:  abdallah-wp-public
+    network:
+      assign_public_ip: true
+    image_id: ami-005fc0f236362e99f
+    tags:
+      env: abdallah
+      task: ansible
+  register: result
+
+- name: Wait to completely provision instances
+  pause:
+    minutes: 1
+
+- name: Refresh inventory after creating EC2 instances
+  meta: refresh_inventory

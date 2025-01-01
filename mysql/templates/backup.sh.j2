@@ -1,0 +1,12 @@
+#!/bin/bash
+
+date=$(date +"%Y-%m-%d")
+backup_file="{{ backup_directory }}/mysql_backup_$date.sql"
+mysqldump -u root -p"{{ mysql_root_password }}" --all-databases > $backup_file
+
+if [ $? -eq 0 ]; then
+    echo "Backup successful: $backup_file"
+else
+    echo "Backup failed"
+    exit 1
+fi

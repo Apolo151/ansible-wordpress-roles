@@ -1,0 +1,13 @@
+# inventory.aws_ec2.yml
+plugin: amazon.aws.aws_ec2
+
+# This sets the region to query. You can add more regions or leave empty for all regions.
+regions:
+  - us-east-1
+
+# Filter instances with the specific Name tag
+filters:
+  "tag:Name": "abdallah-ansible"
+
+hostvars:
+  ansible_user: ubuntu  # Set the desired SSH user for all hosts
