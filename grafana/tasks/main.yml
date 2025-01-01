@@ -1,0 +1,98 @@
+---
+# tasks file for grafana
+
+- name: Install dependencies
+  become: yes
+  apt:
+    name:
+      - wget
+      - tar
+      - nginx
+      - unzip
+      - apt-transport-https 
+      - software-properties-common
+    state: present
+
+- name: Check if Prometheus archive exists
+  become: true
+  stat:
+    path: /tmp/prometheus.tar.gz
+  register: prometheus_archive
+  tags: prometheus
+
+- name: Download and extract Prometheus
+  become: yes
+  get_url:
+    url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+    dest: /tmp/prometheus.tar.gz
+  when: not prometheus_archive.stat.exists
+
+- name: Extract Prometheus
+  become: yes
+  unarchive:
+    src: /tmp/prometheus.tar.gz
+    dest: /opt/
+    remote_src: yes
+  when: not prometheus_archive.stat.exists
+
+- name: Check if node_exporter archive exists
+  become: true
+  stat:
+    path: /tmp/node_exporter.tar.gz
+  register: node_exporter_archive
+  tags: node_exporter
+
+- name: Download and extract node_exporter
+  become: yes
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz"
+    dest: /tmp/node_exporter.tar.gz
+  when: not node_exporter_archive.stat.exists
+
+- name: Extract node_exporter
+  become: yes
+  unarchive:
+    src: /tmp/node_exporter.tar.gz
+    dest: /opt/
+    remote_src: yes
+  when: not node_exporter_archive.stat.exists
+
+- name: Move Prometheus binaries
+  become: yes
+  shell: |
+    mv /opt/prometheus-{{ prometheus_version }}.linux-amd64/prometheus /usr/local/bin/
+    mv /opt/prometheus-{{ prometheus_version }}.linux-amd64/promtool /usr/local/bin/
+    mv /opt/prometheus-{{ prometheus_version }}.linux-amd64/consoles /etc/prometheus/
+    mv /opt/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries /etc/prometheus/
+  when: not prometheus_archive.stat.exists
+
+
+- name: Create directory for apt keyrings
+  become: yes
+  file:
+    path: /etc/apt/keyrings/
+    state: directory
+    mode: '0755'
+
+- name: Add Grafana GPG key
+  become: yes
+  get_url:
+    url: https://packages.grafana.com/gpg.key
+    dest: /etc/apt/keyrings/grafana.gpg
+
+- name: execute shell command
+  become: yes
+  shell: echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+
+- name: Update APT cache
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Install Grafana
+  become: yes
+  apt:
+    name: grafana
+    state: present
+
+- include_tasks: config.yml

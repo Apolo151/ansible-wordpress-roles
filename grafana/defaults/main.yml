@@ -1,0 +1,5 @@
+---
+# defaults file for grafana
+prometheus_version: "2.53.3"
+grafana_version: "10.1.3"
+

@@ -1,0 +1,41 @@
+---
+
+- name: Create Prometheus configuration file
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+  become: yes
+
+- name: Start and enable Prometheus
+  service:
+    name: prometheus
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Start and enable Grafana
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Configure Nginx for Grafana
+  template:
+    src: grafana_nginx.conf.j2
+    dest: /etc/nginx/sites-available/grafana
+  become: yes
+
+- name: Enable Nginx configuration
+  file:
+    src: /etc/nginx/sites-available/grafana
+    dest: /etc/nginx/sites-enabled/grafana
+    state: link
+  become: yes
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+  become: yes
+
