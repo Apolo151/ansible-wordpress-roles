@@ -1,0 +1,49 @@
+---
+- name: EC2 Instance Management Playbook
+  hosts: localhost
+  gather_facts: false
+  vars:
+    aws_region: "us-east-1"
+    ec2_action: "start"
+    my_tag: "abdallah-ansible"
+
+  tasks:
+    - name: Get EC2 instance information
+      amazon.aws.ec2_instance_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "{{ my_tag }}"
+      register: ec2_info
+
+    - name: Start EC2 instances
+      amazon.aws.ec2_instance:
+        region: "{{ aws_region }}"
+        instance_ids: "{{ item.instance_id }}"
+        state: running
+      when: ec2_action == "start"
+      loop: "{{ ec2_info.instances }}"
+      loop_control:
+        label: "{{ item.instance_id }}"
+      tags: ec2_manage
+
+    - name: Stop EC2 instances
+      amazon.aws.ec2_instance:
+        region: "{{ aws_region }}"
+        instance_ids: "{{ item.instance_id }}"
+        state: stopped
+      when: ec2_action == "stop"
+      loop: "{{ ec2_info.instances }}"
+      loop_control:
+        label: "{{ item.instance_id }}"
+      tags: ec2_manage
+
+    - name: Delete EC2 instances
+      amazon.aws.ec2_instance:
+        region: "{{ aws_region }}"
+        instance_ids: "{{ item.instance_id }}"
+        state: absent
+      when: ec2_action == "terminate"
+      loop: "{{ ec2_info.instances }}"
+      loop_control:
+        label: "{{ item.instance_id }}"
+      tags: ec2_manage

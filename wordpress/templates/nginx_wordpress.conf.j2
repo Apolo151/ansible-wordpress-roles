@@ -1,0 +1,20 @@
+server {
+    listen 80 default_server;
+	listen [::]:80 default_server;
+    server_name _;
+    root {{ nginx_root }};
+
+    index index.php index.html index.htm index.nginx-debian.html;
+
+    location / {
+        # First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
+        include fastcgi_params;
+    }
+}

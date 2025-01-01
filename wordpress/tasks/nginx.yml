@@ -1,0 +1,30 @@
+---
+# tasks file for nginx
+
+- name: Install Nginx
+  become: true
+  apt:
+    name: nginx
+    state: present
+
+- name: Configure Nginx for WordPress
+  become: true
+  template:
+    src: nginx_wordpress.conf.j2
+    dest: /etc/nginx/sites-available/wordpress
+    mode: 0644
+
+- name: Enable Nginx configuration
+  become: true
+  file:
+    src: /etc/nginx/sites-available/wordpress
+    dest: /etc/nginx/sites-enabled/wordpress
+    state: link
+
+- name: Remove default Nginx configuration
+  become: true
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  when: ansible_check_mode == false
+  notify: Reload Nginx

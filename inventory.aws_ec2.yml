@@ -8,6 +8,3 @@ regions:
 # Filter instances with the specific Name tag
 filters:
   "tag:Name": "abdallah-ansible"
-
-hostvars:
-  ansible_user: ubuntu  # Set the desired SSH user for all hosts

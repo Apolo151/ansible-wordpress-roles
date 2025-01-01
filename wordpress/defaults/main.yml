@@ -1,2 +1,11 @@
 ---
 # defaults file for wordpress
+
+mysql_root_user: root
+mysql_root_password: "root_password"
+wordpress_user: "wordpress_user"
+wordpress_user_password: "wordpress_password"
+wordpress_database: "wordpress"
+wordpress_database_host: "localhost"
+wordpress_path: "/var/www/html"
+nginx_root: /var/www/html/wordpress

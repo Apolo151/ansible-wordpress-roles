@@ -17,7 +17,11 @@
 
 - name: Wait to completely provision instances
   pause:
-    minutes: 1
+    minutes: 4
 
 - name: Refresh inventory after creating EC2 instances
   meta: refresh_inventory
+
+- name: Print the URL of the EC2 instance
+  debug:
+    msg: "EC2 instance URL is http://{{ result.instances[0].public_ip_address }}"

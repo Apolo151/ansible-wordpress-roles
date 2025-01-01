@@ -1,46 +1,79 @@
 ---
 # tasks file for mysql
 
-- name: Install MySQL 8
-  become: yes
+- name: Install MySQL 8 (Debian/Ubuntu)
+  when: ansible_os_family == 'Debian'
+  become: true
   apt:
     name: mysql-server
     state: present
   tags: mysql
 
-- name: Ensure MySQL is running
-  become: yes
+- name: Install MySQL 8 (RHEL/CentOS/Fedora)
+  when: ansible_os_family == 'RedHat'
+  become: true
+  yum:
+    name: mysql
+    state: present
+  tags: mysql
+
+- name: Ensure MySQL is running (Debian/Ubuntu)
+  when: ansible_os_family == 'Debian'
+  become: true
   service:
     name: mysql
     state: started
     enabled: yes
   tags: mysql
-  
-- name: Install MySQL Python dependencies for Python 3
-  become: yes
+
+- name: Ensure MySQL is running (RHEL/CentOS/Fedora)
+  when: ansible_os_family == 'RedHat'
+  become: true
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+  tags: mysql
+
+- name: Install MySQL Python dependencies for Python 3 (Debian/Ubuntu)
+  when: ansible_os_family == 'Debian'
+  become: true
   package:
     name:
       - python3-pip
       - python3-dev
       - libmysqlclient-dev
       - build-essential
+    state: present
+  tags: mysql
+
+- name: Install MySQL Python dependencies for Python 3 (RHEL/CentOS/Fedora)
+  when: ansible_os_family == 'RedHat'
+  become: true
+  package:
+    name:
+      - python3-pip
+      - python3-devel
+      - mysql-devel
+      - gcc
+    state: present
   tags: mysql
 
 - name: Install PyMySQL for Python 3
-  become: yes
+  become: true
   pip:
     name: PyMySQL
   tags: mysql
 
 - name: Setup the root user password and access with hosts
-  become: yes
+  become: true
   become_user: root
   mysql_user:
-    name: "{{ mysql_superuser }}"
+    name: "{{ mysql_root_user }}"
     host: "{{ item }}"
-    password: "{{ mysql_superuser_password }}"
+    password: "{{ mysql_root_password }}"
     login_user: root
-    login_password: "{{ mysql_superuser_password }}"
+    login_password: "{{ mysql_root_password }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
     check_implicit_admin: yes
     priv: "*.*:ALL,GRANT"
@@ -50,25 +83,5 @@
     - ::1
     - localhost
   tags: mysql
-
-- name: Create wordpress database
-  become: yes
-  mysql_db:
-    login_user: "{{ mysql_superuser }}"
-    login_password: "{{ mysql_superuser_password }}"
-    name: "{{ wordpress_database }}"
-    state: present
-  tags: mysql,wordpress_db
-
-- name: Create wordpress user with privileges
-  become: yes
-  mysql_user:
-    login_user: "{{ mysql_superuser }}"
-    login_password: "{{ mysql_superuser_password }}"
-    name: "{{ wordpress_user }}"
-    password: "{{ wordpress_user_password }}"
-    priv: "{{ wordpress_database }}.*:ALL"
-    state: present
-  tags: mysql,wordpress_db
 
 - include_tasks: cron.yml

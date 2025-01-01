@@ -1,9 +1,7 @@
 ---
 # defaults file for mysql
-mysql_superuser: root
-mysql_superuser_home: "{% if mysql_superuser == 'root' %}/root{% else %}/home/{{ mysql_superuser }}{% endif %}"
+mysql_root_user: root
 mysql_root_password: "root_password"
-mysql_superuser_password: "root_password"
 wordpress_user: "wordpress_user"
 wordpress_user_password: "wordpress_password"
 wordpress_database: "wordpress"
