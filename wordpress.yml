@@ -14,5 +14,4 @@
     - mysql
     - wordpress
     #- grafana
-  tags:
-    - config
+  tags: config,wordpress,mysql,grafana

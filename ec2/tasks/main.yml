@@ -2,17 +2,17 @@
 # tasks file for ec2
 - name: Provision an EC2 instance with a public IP address
   amazon.aws.ec2_instance:
-    name: abdallah-ansible
-    key_name: "abdallah-key-abi"
-    vpc_subnet_id: subnet-0277349f7e1ec9644
-    instance_type: t3.small
-    security_group:  abdallah-wp-public
+    name: "{{ machine_name }}"
+    key_name: "{{ key_name }}"
+    vpc_subnet_id: "{{ vpc_subnet_id }}"
+    instance_type: "{{ instance_type }}"
+    security_group:  "{{ security_group }}"
     network:
       assign_public_ip: true
-    image_id: ami-005fc0f236362e99f
+    image_id: "{{ image_id }}"
     tags:
-      env: abdallah
-      task: ansible
+      env: "{{ env_tag }}"
+      task: "{{ task_tag }}"
   register: result
 
 - name: Wait to completely provision instances
