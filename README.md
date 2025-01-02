@@ -47,14 +47,29 @@ And if you want to access grafana you should open [http://192.168.1.5/grafana](h
 7. [ ] Create prometheus and Grafana Role
 
 
+### Setup and Commands
+- setup the `aws_access_key_id` and `aws_access_key_secret` using environment vars in the shell
 
-## Notes
+```bash
+export AWS_ACCESS_KEY_ID='AK123'
+export AWS_SECRET_ACCESS_KEY='abc123'
+```
+
+
 - To test connection: `ansible -i inventory.aws_ec2.yml all -m ping -u ubuntu`
 - To run playbook: `ansible-playbook -i inventory.aws_ec2.yml wordpress.yml -u ubuntu`
 - To stop ec2 instances: `ansible-playbook ec2_state.yml -e "ec2_action=stop"`
 	- use `start, terminate` actions for needed actions
 
+## Notes
 
 ### Further Seach
 
 - Search for a way to find when instance is ready instead of waiting for fixed amount of minutes (ec2 role)
+
+### Questions
+- Best practices for storing state in Ansible
+- Best practice to handle agnostic roles (`when`, tags, ...)
+	- especially to handle
+		- version conflicts
+		- idempotent tasks
