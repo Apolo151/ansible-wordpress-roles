@@ -5,6 +5,7 @@
     path: "{{ backup_directory }}"
     state: directory
     mode: '0755'
+  tags: mysql
 
 - name: Deploy backup script
   become: true
@@ -12,6 +13,7 @@
     src: backup.sh.j2
     dest: /usr/local/bin/mysql_backup.sh
     mode: '0755'
+  tags: mysql
 
 - name: Configure cron job for backups
   become: true
@@ -23,3 +25,4 @@
     month: "{{ cron_time.split()[3] }}"
     weekday: "{{ cron_time.split()[4] }}"
     job: "/usr/local/bin/mysql_backup.sh"
+  tags: mysql

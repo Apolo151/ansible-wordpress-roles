@@ -9,11 +9,18 @@
     state: present
   tags: mysql
 
+- name: Add MySQL repo (RHEL/CentOS/Fedora)
+  when: ansible_os_family == 'RedHat'
+  template:
+    src: mysql.repo.j2
+    dest: /etc/yum.repos.d/mysql-community.repo
+  tags: mysql
+
 - name: Install MySQL 8 (RHEL/CentOS/Fedora)
   when: ansible_os_family == 'RedHat'
   become: true
   yum:
-    name: mysql
+    name: mysql-community-server
     state: present
   tags: mysql
 

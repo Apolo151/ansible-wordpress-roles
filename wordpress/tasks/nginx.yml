@@ -13,6 +13,7 @@
     src: nginx_wordpress.conf.j2
     dest: /etc/nginx/sites-available/wordpress
     mode: 0644
+  tags: wordpress,nginx
 
 - name: Enable Nginx configuration
   become: true
@@ -20,6 +21,7 @@
     src: /etc/nginx/sites-available/wordpress
     dest: /etc/nginx/sites-enabled/wordpress
     state: link
+  tags: wordpress,nginx
 
 - name: Remove default Nginx configuration
   become: true
@@ -28,3 +30,4 @@
     state: absent
   when: ansible_check_mode == false
   notify: Reload Nginx
+  tags: wordpress,nginx
