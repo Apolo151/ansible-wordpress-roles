@@ -33,6 +33,8 @@
 And if you want to access grafana you should open [http://192.168.1.5/grafana](http://192.168.1.5/grafana)
 
 
+- Make ansible create a CNAME record in Cloudflare for our machine
+
 ### Implementation Steps
 1. [x] Export AWS credentials as env vars
 1. [x] Setup Ansible Roles
@@ -41,17 +43,18 @@ And if you want to access grafana you should open [http://192.168.1.5/grafana](h
 4. [x] Finish Wordpress role
 	1. [x] setup needed config files
 5. [x] Finish EC2 start, stop, delete roles
-6. [x] Make MySQL role distro agnostic
+6. [ ] Make MySQL role distro agnostic
 7. [ ] Create prometheus and Grafana Role
 
 
 
 ## Notes
 - To test connection: `ansible -i inventory.aws_ec2.yml all -m ping -u ubuntu`
-- To run playbook: `ansible-playbook -i inventory.aws_ec2.yml wordpress.yml -u ubuntu --private-key ~/.ssh/abdallah-key-abi.pem`
-- To run ec2_management playbook action: `ansible-playbook ec2_management_playbook.yml -e "ec2_action=stop"`
+- To run playbook: `ansible-playbook -i inventory.aws_ec2.yml wordpress.yml -u ubuntu`
+- To stop ec2 instances: `ansible-playbook ec2_state.yml -e "ec2_action=stop"`
+	- use `start, terminate` actions for needed actions
 
 
-### Further Search
+### Further Seach
 
 - Search for a way to find when instance is ready instead of waiting for fixed amount of minutes (ec2 role)
