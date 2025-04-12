@@ -17,7 +17,7 @@
 
 - name: Wait to completely provision instances
   pause:
-    minutes: 4
+    minutes: 3
 
 - name: Refresh inventory after creating EC2 instances
   meta: refresh_inventory

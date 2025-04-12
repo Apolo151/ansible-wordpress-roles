@@ -1,6 +1,8 @@
 #ansible #devops #abi 
 
-----
+## Description
+
+**Goal:**
 
 1. create an ansible role that creates an ec2 machine of type `t3.small` (make the OS ubuntu 22.04)
 2. create an ansible role that installs wordpress along with all necessary configs
@@ -22,32 +24,8 @@
 
 3. invoking a stop or start or delete using ansible role or using tags if you decide to just include tasks in ec2 role 
 
------
 
-**Extra**
-
-- Create a role for prometheus and grafana that installs on the same wordpress ec2 machine and is accessible from internet using a sub uri
-	- Ex: [http://192.168.1.5/grafana](http://192.168.1.5/grafana)
-
-> So if you access [http://192.168.1.5](http://192.168.1.5) , it should open wordpress
-And if you want to access grafana you should open [http://192.168.1.5/grafana](http://192.168.1.5/grafana)
-
-
-- Make ansible create a CNAME record in Cloudflare for our machine
-
-### Implementation Steps
-1. [x] Export AWS credentials as env vars
-1. [x] Setup Ansible Roles
-2. [x] Finish EC2 role
-3. [x] Finish MySQL role
-4. [x] Finish Wordpress role
-	1. [x] setup needed config files
-5. [x] Finish EC2 start, stop, delete roles
-6. [ ] Make MySQL role distro agnostic
-7. [ ] Create prometheus and Grafana Role
-
-
-### Setup and Commands
+## Setup and Commands
 - setup the `aws_access_key_id` and `aws_access_key_secret` using environment vars in the shell
 
 ```bash
@@ -60,16 +38,3 @@ export AWS_SECRET_ACCESS_KEY='abc123'
 - To run playbook: `ansible-playbook -i inventory.aws_ec2.yml wordpress.yml -u ubuntu`
 - To stop ec2 instances: `ansible-playbook ec2_state.yml -e "ec2_action=stop"`
 	- use `start, terminate` actions for needed actions
-
-## Notes
-
-### Further Seach
-
-- Search for a way to find when instance is ready instead of waiting for fixed amount of minutes (ec2 role)
-
-### Questions
-- Best practices for storing state in Ansible
-- Best practice to handle agnostic roles (`when`, tags, ...)
-	- especially to handle
-		- version conflicts
-		- idempotent tasks

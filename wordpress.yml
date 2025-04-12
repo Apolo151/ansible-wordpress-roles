@@ -14,14 +14,4 @@
   roles:
     - mysql
     - wordpress
-    #- grafana
-  # tasks:
-  # - name: Create a example.net CNAME record to example.com
-  # community.general.cloudflare_dns:
-  #   zone: cloud-stacks.com
-  #   type: CNAME
-  #   value: abdallah-ansible
-  #   account_email: abdallah.ibrahim.ismail15@gmail.com
-  #   account_api_key: 
-  #   state: present
   tags: config
